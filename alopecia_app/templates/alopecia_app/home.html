@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alopecia Clasification - Análisis Avanzado con IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Fondo animado */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientFlow 20s ease infinite;
+            z-index: -2;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Partículas de fondo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-150px) rotate(180deg); opacity: 1; }
+        }
+
+        /* Grid de fondo futurista */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: gridMove 30s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Navegación */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed, #ec4899);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #4f46e5;
+            text-shadow: 0 0 10px rgba(79, 70, 229, 0.8);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px 0;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #f0f9ff, #ddd6fe, #fdf2f8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 30px rgba(255, 255, 255, 0.3);
+            animation: titleFloat 3s ease-in-out infinite;
+            line-height: 1.1;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            color: white;
+            border-radius: 50px;
+            box-shadow: 
+                0 20px 40px rgba(79, 70, 229, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 1s both;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 30px 60px rgba(79, 70, 229, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Características */
+        .features {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 70px;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed, #ec4899);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateY(5deg);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(79, 70, 229, 0.5);
+        }
+
+        .feature-card:hover::before {
+            transform: scale(1);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 0 20px rgba(79, 70, 229, 0.8));
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.95);
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sección de estadísticas */
+        .stats {
+            padding: 80px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            margin: 50px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            animation: countUp 2s ease-out;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed, #ec4899);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            padding: 100px 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(30px);
+        }
+
+        .footer-cta h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .footer-cta p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .feature-card {
+                padding: 30px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        /* Efectos de scroll */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-background"></div>
+    <div class="particles" id="particles"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">🚀 AI Neural</div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#tecnologia">Tecnología</a></li>
+                <li><a href="{% url 'chat_with_ollama' %}">Chat IA</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Inteligencia Artificial
+                <br>Clasifacion de alopecias
+            </h1>
+            <p class="hero-subtitle">
+                Análisis avanzado de texto e imágenes con modelos neurales de última generación. 
+                Experimenta el futuro de la IA conversacional y visual.
+            </p>
+            <a href="{% url 'chat_with_ollama' %}" class="cta-button">
+                🚀 Comenzar Análisis IA
+            </a>
+        </div>
+    </section>
+
+    <!-- Características -->
+    <section class="features" id="caracteristicas">
+        <h2 class="features-title scroll-reveal">Tecnología Revolucionaria</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card scroll-reveal">
+                <span class="feature-icon">🧠</span>
+                <h3 class="feature-title">Modelos LLM Avanzados</h3>
+                <p class="feature-description">
+                    Acceso a los mejores modelos de lenguaje natural para análisis 
+                    conversacional profundo y respuestas contextualmente precisas.
+                </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+                <span class="feature-icon">👁️</span>
+                <h3 class="feature-title">Visión Neural</h3>
+                <p class="feature-description">
+                    Análisis de imágenes de Alopecia con MobileNetV2 y EfficientNet-B0 
+                    para detección y clasificación de alta precisión.
+                </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+                <span class="feature-icon">⚡</span>
+                <h3 class="feature-title">Procesamiento Ultrarrápido</h3>
+                <p class="feature-description">
+                    Optimizado para velocidad sin comprometer la calidad. 
+                    Obtén resultados en segundos con arquitecturas eficientes.
+                </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+                <span class="feature-icon">🔒</span>
+                <h3 class="feature-title">Seguridad Avanzada</h3>
+                <p class="feature-description">
+                    Tus datos están protegidos con encriptación de grado empresarial 
+                    y procesamiento seguro en la nube.
+                </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+                <span class="feature-icon">🎯</span>
+                <h3 class="feature-title">Precisión Científica</h3>
+                <p class="feature-description">
+                    Modelos entrenados con millones de datos para garantizar 
+                    resultados precisos y confiables en cada análisis.
+                </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+                <span class="feature-icon">🌐</span>
+                <h3 class="feature-title">Acceso Universal</h3>
+                <p class="feature-description">
+                    Interfaz web responsiva que funciona en cualquier dispositivo. 
+                    IA al alcance de todos, en cualquier lugar.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estadísticas -->
+    <section class="stats" id="tecnologia">
+        <div class="stats-grid">
+            <div class="stat-item scroll-reveal">
+                <span class="stat-number">99.7%</span>
+                <div class="stat-label">Precisión en Análisis</div>
+            </div>
+            <div class="stat-item scroll-reveal">
+                <span class="stat-number">2.3s</span>
+                <div class="stat-label">Tiempo de Respuesta</div>
+            </div>
+            <div class="stat-item scroll-reveal">
+                <span class="stat-number">50M+</span>
+                <div class="stat-label">Imágenes Procesadas</div>
+            </div>
+            <div class="stat-item scroll-reveal">
+                <span class="stat-number">24/7</span>
+                <div class="stat-label">Disponibilidad</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="footer-cta">
+        <h2 class="scroll-reveal">¿Listo para experimentar el futuro?</h2>
+        <p class="scroll-reveal">
+            Únete a miles de usuarios que ya están aprovechando el poder 
+            de la inteligencia artificial avanzada.
+        </p>
+        <a href="{% url 'chat_with_ollama' %}" class="cta-button scroll-reveal">
+            🤖 Acceder al Chat IA
+        </a>
+    </section>
+
+    <script>
+        // Crear partículas
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 80;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 3 + 1;
+                const x = Math.random() * window.innerWidth;
+                const duration = Math.random() * 8 + 6;
+                const delay = Math.random() * 8;
+
+                particle.style.left = x + 'px';
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
+                particle.style.bottom = '-10px';
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Efectos de scroll reveal
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('revealed');
+                }
+            });
+        }
+
+        // Navbar transparente en scroll
+        function handleNavbarScroll() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(0, 0, 0, 0.3)';
+            } else {
+                navbar.style.background = 'rgba(0, 0, 0, 0.1)';
+            }
+        }
+
+        // Smooth scroll para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect para hero
+        function handleParallax() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            const rate = scrolled * -0.5;
+            hero.style.transform = `translateY(${rate}px)`;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            revealOnScroll();
+        });
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            revealOnScroll();
+            handleNavbarScroll();
+            handleParallax();
+        });
+
+        // Animación de números contador
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const updateCounter = () => {
+                    const target = parseFloat(counter.getAttribute('data-target')) || parseFloat(counter.textContent);
+                    const current = parseFloat(counter.textContent) || 0;
+                    const increment = target / 100;
+                    
+                    if (current < target) {
+                        counter.textContent = Math.ceil(current + increment);
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                // Guardar el valor original
+                counter.setAttribute('data-target', counter.textContent);
+                counter.textContent = '0';
+                
+                // Iniciar animación cuando sea visible
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateCounter();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                observer.observe(counter);
+            });
+        }
+
+        // Inicializar contadores
+        window.addEventListener('load', animateCounters);
+    </script>
+</body>
+</html>

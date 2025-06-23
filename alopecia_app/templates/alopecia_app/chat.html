@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - Alopecia Clasification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f23;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondo animado con partículas */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            z-index: -2;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            animation: containerFloat 0.8s ease-out;
+            transform: perspective(1000px) rotateX(2deg);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+            box-shadow: 
+                0 35px 70px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes containerFloat {
+            from {
+                opacity: 0;
+                transform: perspective(1000px) rotateX(10deg) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: perspective(1000px) rotateX(2deg);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, 
+                rgba(79, 70, 229, 0.9), 
+                rgba(124, 58, 237, 0.9),
+                rgba(236, 72, 153, 0.9));
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(45deg) translateX(-100%); }
+            50% { transform: rotate(45deg) translateX(100%); }
+            100% { transform: rotate(45deg) translateX(100%); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #fff, #f0f9ff, #ddd6fe);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-container {
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .form-group {
+            margin-bottom: 35px;
+            animation: slideInFromLeft 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideInFromLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        label::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(to bottom, #4f46e5, #7c3aed);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        textarea, select {
+            width: 100%;
+            padding: 20px 24px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-family: inherit;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        textarea::placeholder, select option {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+
+        textarea:focus, select:focus {
+            outline: none;
+            border-color: rgba(79, 70, 229, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 0 0 4px rgba(79, 70, 229, 0.2),
+                0 8px 32px rgba(79, 70, 229, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.01);
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 16px center;
+            background-repeat: no-repeat;
+            background-size: 20px;
+            padding-right: 56px;
+            appearance: none;
+        }
+
+        select option {
+            background: #1f1f3a;
+            color: white;
+            padding: 10px;
+        }
+
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: block;
+            width: 100%;
+        }
+
+        .file-input, input[type="file"] {
+            position: absolute !important;
+            left: -9999px !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .file-input-label:hover {
+            border-color: rgba(79, 70, 229, 0.8);
+            background: rgba(79, 70, 229, 0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.3);
+        }
+
+        .file-input-label:hover::before {
+            left: 100%;
+        }
+
+        .file-preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .file-preview img {
+            max-width: 250px;
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .file-preview img:hover {
+            transform: scale(1.05) rotateY(5deg);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 22px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 30px rgba(79, 70, 229, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 
+                0 20px 40px rgba(79, 70, 229, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            margin-top: 50px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: resultsSlideIn 0.8s ease-out;
+        }
+
+        @keyframes resultsSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #4f46e5;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .result-card:hover::before {
+            transform: scale(1);
+        }
+
+        .result-card h3 {
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-card p {
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .uploaded-image {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .uploaded-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 24px;
+                transform: none;
+            }
+            
+            .container:hover {
+                transform: none;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            label::before {
+                display: none;
+            }
+        }
+
+        /* Efectos de profundidad para elementos */
+        .depth-effect {
+            transform: perspective(1000px) rotateX(1deg);
+            transition: all 0.3s ease;
+        }
+
+        .depth-effect:hover {
+            transform: perspective(1000px) rotateX(0deg) translateZ(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Neural Interface</h1>
+            <p>Análisis avanzado con inteligencia artificial de próxima generación</p>
+        </div>
+
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+                {% csrf_token %}
+
+                <div class="form-group depth-effect">
+                    <label for="prompt">💭 Consulta Inteligente</label>
+                    <div class="input-container">
+                        {{ form.prompt }}
+                    </div>
+                </div>
+
+                <div class="form-group depth-effect">
+                    <label for="llm_model">🧠 Modelo de Lenguaje Neural</label>
+                    <select id="llm_model" name="llm_model" required>
+                        <option value="" disabled selected>Selecciona tu modelo LLM preferido</option>
+                        {% for model in available_models_llm %}
+                            <option value="{{ model }}">{{ model }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group depth-effect">
+                    <label for="image_model">🎯 Red Neuronal para Visión</label>
+                    <select id="image_model" name="image_model" required>
+                        <option value="" disabled selected>Elige la arquitectura de análisis visual</option>
+                        <option value="mobilenetv2">MobileNetV2 - Optimizado para velocidad</option>
+                        <option value="efficientnet_b0">EfficientNet-B0 - Máxima precisión</option>
+                        <option value="custom_cnn">Red Neuronal Convolucional</option>
+                    </select>
+                </div>
+
+                <div class="form-group depth-effect">
+                    <label>📸 Carga Visual Neural</label>
+                    <div class="file-input-container">
+                        <div style="position: absolute; left: -9999px; opacity: 0;">
+                            {{ form.image }}
+                        </div>
+                        <label for="{{ form.image.id_for_label }}" class="file-input-label">
+                            <div>
+                                <p style="font-size: 1.1rem; margin-bottom: 8px;">🌟 Arrastra tu imagen o selecciona archivo</p>
+                                <small style="opacity: 0.7;">Formatos soportados: JPG, PNG, WEBP | Máximo: 10MB</small>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="imagePreview" class="file-preview"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    ⚡ Iniciar Análisis Neural
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="font-size: 1.1rem;">🔄 Procesando con IA avanzada...</p>
+                <p style="opacity: 0.7; margin-top: 10px;">Analizando patrones neuronales...</p>
+            </div>
+
+            {% if response or prediction or image_url %}
+            <div class="results-section">
+                {% if response %}
+                <div class="result-card">
+                    <h3>🤖 Respuesta del Modelo LLM</h3>
+                    <p>{{ response }}</p>
+                </div>
+                {% endif %}
+
+                {% if prediction %}
+                <div class="result-card">
+                    <h3>🔍 Análisis Neural de Imagen</h3>
+                    <p>{{ prediction }}</p>
+                </div>
+                {% endif %}
+
+                {% if image_url %}
+                <div class="result-card">
+                    <h3>🖼️ Imagen Procesada</h3>
+                    <div class="uploaded-image">
+                        <img src="{{ image_url }}" alt="Imagen analizada por IA" />
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Crear partículas animadas
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 1;
+                const x = Math.random() * window.innerWidth;
+                const duration = Math.random() * 6 + 4;
+                const delay = Math.random() * 5;
+
+                particle.style.left = x + 'px';
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
+                particle.style.bottom = '-10px';
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Preview de imagen mejorado
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" 
+                             alt="Vista previa neural" 
+                             style="max-width: 300px; border-radius: 16px; margin-top: 20px; 
+                                    box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+                                    transition: all 0.3s ease;"
+                             onmouseover="this.style.transform='scale(1.05)'"
+                             onmouseout="this.style.transform='scale(1)'">
+                    `;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🔄 Procesando con IA...';
+            submitBtn.style.background = 'linear-gradient(135deg, #6b7280, #9ca3af)';
+        }
+
+        // Inicializar efectos
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Configurar preview de imagen con el ID correcto de Django
+            const imageInput = document.querySelector('input[type="file"]');
+            if (imageInput) {
+                imageInput.addEventListener('change', previewImage);
+            }
+
+            // Efectos de parallax suave
+            document.addEventListener('mousemove', (e) => {
+                const container = document.querySelector('.container');
+                const x = (e.clientX / window.innerWidth) * 2 - 1;
+                const y = (e.clientY / window.innerHeight) * 2 - 1;
+                
+                container.style.transform = `perspective(1000px) rotateY(${x * 2}deg) rotateX(${-y * 2}deg)`;
+            });
+
+            // Resetear transform al salir del mouse
+            document.addEventListener('mouseleave', () => {
+                const container = document.querySelector('.container');
+                container.style.transform = 'perspective(1000px) rotateX(2deg)';
+            });
+        });
+
+        // Animación de escritura para el placeholder
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.placeholder = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.placeholder += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Inicializar animación de placeholder
+        window.addEventListener('load', () => {
+            const promptTextarea = document.querySelector('textarea[name="prompt"]');
+            if (promptTextarea) {
+                typeWriter(promptTextarea, 'Describe lo que necesitas analizar o pregunta lo que quieras saber...', 50);
+            }
+        });
+    </script>
+</body>
+</html>
