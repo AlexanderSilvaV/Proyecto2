@@ -45,9 +45,6 @@ alopecia_project/
 
 └── README.md # Documentación del proyecto
 
-yaml
-Copiar
-Editar
 
 ---
 
@@ -55,29 +52,23 @@ Editar
 
 ### 1. Clonar el repositorio
 
-```bash
+
 git clone https://github.com/AlexanderSilvaV/Proyecto2.git
 cd Proyecto2
 2. Configurar entorno virtual y dependencias
 En Linux/macOS:
 
-bash
-Copiar
-Editar
+
 python3.11 -m venv venv
 source venv/bin/activate
 En Windows (PowerShell):
 
-powershell
-Copiar
-Editar
+
 python -m venv venv
 .\venv\Scripts\activate
 Instalar las librerías necesarias:
 
-bash
-Copiar
-Editar
+
 pip install -r requirements.txt
 3. Configurar Laragon (opcional, para entorno local)
 Asegúrate de que Laragon esté instalado (versión 5.0).
@@ -87,16 +78,12 @@ Configura Apache/Nginx para servir el proyecto Django (opcional).
 Puedes usar Laragon para gestionar bases de datos si tu proyecto las requiere.
 
 4. Ejecutar servidor de desarrollo Django
-bash
-Copiar
-Editar
+
 python manage.py runserver
 5. Acceder a la aplicación
 Abre tu navegador y visita:
 
-cpp
-Copiar
-Editar
+
 http://127.0.0.1:8000/
 🧠 Detalles del modelo
 Arquitectura: CNN personalizada entrenada desde cero adaptada para clasificación en 7 clases.
