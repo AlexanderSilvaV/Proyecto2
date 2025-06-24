@@ -25,14 +25,23 @@ Desarrollar una herramienta capaz de identificar automáticamente el tipo de alo
 
 alopecia_project/
 ├── alopecia_app/ # Aplicación Django: vistas, modelos, URLs, formularios
+
 ├── media/ # Carpeta para imágenes subidas por usuarios
+
 ├── models/ # Modelos entrenados (.pth)
+
 ├── static/ # Archivos estáticos: CSS, JavaScript, imágenes
+
 ├── templates/ # Archivos HTML para la interfaz web
+
 ├── cnn_model.py # Script para entrenamiento y evaluación del modelo CNN
+
 ├── manage.py # Script para gestión de comandos Django
+
 ├── requirements.txt # Dependencias del proyecto
+
 ├── .gitignore # Archivos y carpetas ignoradas por git
+
 └── README.md # Documentación del proyecto
 
 yaml
