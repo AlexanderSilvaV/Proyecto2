@@ -24,6 +24,7 @@ Desarrollar una herramienta capaz de identificar automáticamente el tipo de alo
 ## 📁 Estructura del proyecto
 
 alopecia_project/
+
 ├── alopecia_app/ # Aplicación Django: vistas, modelos, URLs, formularios
 
 ├── media/ # Carpeta para imágenes subidas por usuarios
